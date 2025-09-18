@@ -2,7 +2,12 @@ import mongoose, { Schema, model, models } from 'mongoose'
 import bcrypt from 'bcryptjs'
 import { AdminUser } from '@/types'
 
-const AdminSchema = new Schema<AdminUser>({
+interface AdminDocument extends AdminUser, mongoose.Document {
+  comparePassword(candidatePassword: string): Promise<boolean>
+  updateLastLogin(): Promise<AdminDocument>
+}
+
+const AdminSchema = new Schema<AdminDocument>({
   username: {
     type: String,
     required: true,
@@ -22,14 +27,16 @@ const AdminSchema = new Schema<AdminUser>({
     default: 'admin'
   },
   lastLogin: {
-    type: Date
+    type: Date,
+    required: false
   }
 }, {
   timestamps: true,
   toJSON: { 
     transform: function(doc, ret) {
-      delete ret.password;
-      return ret;
+      // Remove password from JSON output, but keep it available for deletion if needed
+      const { password, ...result } = ret;
+      return result;
     }
   }
 })
@@ -58,6 +65,6 @@ AdminSchema.methods.updateLastLogin = function() {
   return this.save();
 }
 
-const AdminModel = models.Admin || model<AdminUser>('Admin', AdminSchema)
+const AdminModel = models.Admin || model<AdminDocument>('Admin', AdminSchema)
 
 export default AdminModel

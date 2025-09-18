@@ -1,5 +1,29 @@
 import { Document } from 'mongoose'
 
+// NextAuth types extension
+declare module 'next-auth' {
+  interface User {
+    id: string
+    username: string
+    role: string
+  }
+
+  interface Session {
+    user: {
+      id: string
+      username: string
+      role: string
+    }
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    role: string
+    username: string
+  }
+}
+
 // Base interfaces for Cosmic CMS integration
 interface CosmicObject {
   id: string;
