@@ -1,8 +1,14 @@
-import mongoose, { Schema, model, models } from 'mongoose'
+import mongoose, { Schema, model, models, Document } from 'mongoose'
 import bcrypt from 'bcryptjs'
-import { AdminUser } from '@/types'
 
-interface AdminDocument extends AdminUser, mongoose.Document {
+export interface AdminUser {
+  username: string;
+  password: string;
+  role: 'admin' | 'manager';
+  lastLogin?: Date;
+}
+
+interface AdminDocument extends Omit<AdminUser, 'id'>, Document {
   comparePassword(candidatePassword: string): Promise<boolean>
   updateLastLogin(): Promise<AdminDocument>
 }

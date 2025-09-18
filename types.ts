@@ -111,15 +111,6 @@ export interface CalendarAppointment {
   notes?: string;
 }
 
-// Admin Authentication Types
-export interface AdminUser {
-  id: string;
-  username: string;
-  password: string; // hashed
-  role: 'admin' | 'manager';
-  lastLogin?: Date;
-}
-
 // API Response Types
 export interface ApiResponse<T = any> {
   success: boolean;
